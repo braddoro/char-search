@@ -7,331 +7,249 @@
 		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Grids.js></SCRIPT>
 		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Forms.js></SCRIPT>
 		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/skins/SmartClient/load_skin.js></SCRIPT>
+		<SCRIPT SRC=../smartclientRuntime/isomorphic/skins/Graphite/load_skin.js></SCRIPT>
 	</HEAD>
 	<BODY>
 <SCRIPT>
-isc.SearchLayout = isc.VLayout.create({
-	parent: this,
-	title: "Search",
-	name: "Search",
+isc.defineClass("myListGrid", "ListGrid").addProperties({
+	alternateRecordStyles: true,
+	autoFitFieldWidths: true,
+	autoFitWidthApproach: 'title',
+	canDragResize: true,
+	height: 150,
+	leaveScrollbarGap: false,
+	left: 5,
 	shadowOffset: 3,
 	shadowSoftness: 7,
+	showAllRecords: true,
+	showShadow: true,
+	width: 650,
+	dataArrived: function(startRow, endRow){
+		this.selectSingleRecord(startRow);
+		this.recordClick(this, startRow, startRow);
+	}
+});
+isc.defineClass("myDataSource", "DataSource").addProperties({
+	dataFormat: "json",
+	operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
+	handleError: function(response, request) {
+		return true;
+	}
+});
+isc.defineClass("myLabel", "Label").addProperties({
+	baseStyle: "headerItem",
+	height: 1,
+	width: 500
+});
+
+isc.SearchLayout = isc.VLayout.create({
 	canDragResize: true,
-	showMaximizeButton: true,
+	name: "Search",
+	parent: this,
+	title: "Search",
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 
-		this.itemDS = isc.DataSource.create({
+		this.itemDS = isc.myDataSource.create({
+			dataURL: "Items.php",
 			ID: "itemDS",
-			operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-			dataURL: "char.php?om=getItems",
-			dataFormat: "json",
 			fields:[
 				{name: "itemID", primaryKey: true, detail: true},
-                {name: "class"},
-                {name: "source"},
-				{name: "item_name"},
-                {name: "specialization"},
-                {name: "canonical_name", detail: true},
-                {name: "points", detail: true},
-                {name: "reference"},
-                {name: "difficulty"},
-                {name: "type", detail: true},
-                {name: "base_points", detail: true},
-                {name: "quantity", detail: true},
-                {name: "tech_level", detail: true},
-                {name: "legality_class", detail: true},
-                {name: "value", detail: true},
-                {name: "levels", detail: true},
-                {name: "cr", detail: true},
-                {name: "points_per_level", detail: true},
-                {name: "weight", detail: true},
-                {name: "notes"},
-                {name: "long_description", detail: true}
-		    ],
-		    handleError: function(response, request) {
-		        return true;
-		    }
-		});
-
-		this.defaultDS = isc.DataSource.create({
-			ID: "defaultDS",
-			operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-			dataURL: "char.php?om=getDefaults",
-			dataFormat: "json",
-			fields:[
-			    {name: "defaultID", primaryKey: true, detail: true},
-			    {name: "itemID", detail: true},
-                {name: "type"},
-                {name: "name"},
-                {name: "modifier"},
-                {name: "specialization"},
-		    ],
-		    handleError: function(response, request) {
-		        return true;
-		    }
-		});
-
-		this.modifierDS = isc.DataSource.create({
-			ID: "modifierDS",
-			operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-			dataURL: "char.php?om=getModifiers",
-			dataFormat: "json",
-			fields:[
-			    {name: "modifierID", primaryKey: true, detail: true},
-			    {name: "itemID", detail: true},
-                {name: "name"},
-                {name: "affects"},
-                {name: "reference"},
-                {name: "notes"},
-		    ],
-		    handleError: function(response, request) {
-		        return true;
-		    }
-		});
-
-		this.categoryDS = isc.DataSource.create({
-			ID: "categoryDS",
-			operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-			dataURL: "char.php?om=getCategories",
-			dataFormat: "json",
-			fields:[
-			    {name: "categoryID", primaryKey: true, detail: true},
-			    {name: "itemID", detail: true},
-                {name: "category"}
-		    ],
-		    handleError: function(response, request) {
-		        return true;
-		    }
-		});
-
-		this.bonusDS = isc.DataSource.create({
-			ID: "bonusDS",
-			operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-			dataURL: "char.php?om=getBonuses",
-			dataFormat: "json",
-			fields:[
-			    {name: "bonusID", primaryKey: true, detail: true},
-			    {name: "itemID", detail: true},
-                {name: "class"},
-                {name: "name"},
-                {name: "specialization"},
-                {name: "amount"},
-                {name: "attribute"}
-		    ],
-		    handleError: function(response, request) {
-		        return true;
-		    }
-		});
-
-		this.itemLG = isc.ListGrid.create({
-		    parent: this,
-			ID: "itemLG",
-			left: 5,
-			top: 5,
-			width: 1200,
-			height: 400,
-			autoFetchData: true,
-			showAllRecords: false,
-			showFilterEditor: true,
-			alternateRecordStyles: true,
-			dataSource: this.itemDS,
-			showShadow: true,
-   			shadowSoftness: this.shadowSoftness,
-   			shadowOffset: this.shadowOffset,
-			rowClick: function(record, recordNum, fieldNum, keyboardGenerated){
-			    this.parent.defaultLG.fetchData({itemID: record.itemID});
-			    this.parent.modifierLG.fetchData({itemID: record.itemID});
-			    this.parent.categoryLG.fetchData({itemID: record.itemID});
-			    this.parent.bonusLG.fetchData({itemID: record.itemID});
-//			    var combo = this.parent.inputDForm.getField("USER_ID");
-//			    combo.setValue(record.userID);
-		    },
-		    dataArrived: function(startRow, endRow){
-                this.selectSingleRecord(startRow);
-                this.recordClick(this, startRow, startRow);
-
-		    }
-		});
-
-		this.defaultLG = isc.ListGrid.create({
-		    parent: this,
-			ID: "defaultLG",
-			left: 5,
-			top: 5,
-			width: 800,
-			height: 200,
-			autoFetchData: false,
-			showAllRecords: true,
-			showFilterEditor: false,
-			alternateRecordStyles: true,
-			dataSource: this.defaultDS,
-			showShadow: true,
-   			shadowSoftness: this.shadowSoftness,
-   			shadowOffset: this.shadowOffset,
-		    dataArrived: function(startRow, endRow){
-                this.selectSingleRecord(startRow);
-                this.recordClick(this, startRow, startRow);
-
-		    }
-		});
-
-		this.modifierLG = isc.ListGrid.create({
-		    parent: this,
-			ID: "modifierLG",
-			left: 5,
-			top: 5,
-			width: 800,
-			height: 200,
-			autoFetchData: false,
-			showAllRecords: true,
-			showFilterEditor: false,
-			alternateRecordStyles: true,
-			dataSource: this.modifierDS,
-			showShadow: true,
-   			shadowSoftness: this.shadowSoftness,
-   			shadowOffset: this.shadowOffset,
-		    dataArrived: function(startRow, endRow){
-                this.selectSingleRecord(startRow);
-                this.recordClick(this, startRow, startRow);
-		    }
-		});
-
-
-		this.bonusLG = isc.ListGrid.create({
-		    parent: this,
-			ID: "bonusLG",
-			left: 5,
-			top: 5,
-			width: 800,
-			height: 200,
-			autoFetchData: false,
-			showAllRecords: true,
-			showFilterEditor: false,
-			alternateRecordStyles: true,
-			dataSource: this.bonusDS,
-			showShadow: true,
-   			shadowSoftness: this.shadowSoftness,
-   			shadowOffset: this.shadowOffset,
-		    dataArrived: function(startRow, endRow){
-                this.selectSingleRecord(startRow);
-                this.recordClick(this, startRow, startRow);
-		    }
-		});
-
-		this.categoryLG = isc.ListGrid.create({
-		    parent: this,
-			ID: "categoryLG",
-			left: 5,
-			top: 5,
-			width: 800,
-			height: 100,
-			autoFetchData: false,
-			showAllRecords: true,
-			showFilterEditor: false,
-			alternateRecordStyles: true,
-			dataSource: this.categoryDS,
-			showShadow: true,
-   			shadowSoftness: this.shadowSoftness,
-   			shadowOffset: this.shadowOffset,
-		    dataArrived: function(startRow, endRow){
-                this.selectSingleRecord(startRow);
-                this.recordClick(this, startRow, startRow);
-		    }
-		});
-
-		this.SearchLayout = isc.VLayout.create({
-			parent: this,
-			membersMargin: 0,
-			members: [
-    			isc.VLayout.create({
-    				parent: this,
-    				margin: 4,
-    				members: [
-        				isc.Label.create({
-        					margin: 4,
-        					align: "left",
-        					height: 1,
-        					contents: "<bold><h3>Items</h3></bold>",
-        					baseStyle: "headerItem"
-        				}),
-        				this.itemLG,
-          				isc.HLayout.create({
-          					parent: this,
-          					margin: 4,
-          					members: [
-          						isc.VLayout.create({
-          							parent: this,
-          							margin: 4,
-          							members: [
-                                      isc.Label.create({
-                      					margin: 4,
-                      					align: "left",
-                      					height: 1,
-                      					contents: "<bold><h3>Defaults</h3></bold>",
-                      					baseStyle: "headerItem"
-                      				}),
-          							this.defaultLG,
-          							]
-          						    }),
-      						    isc.VLayout.create({
-          							parent: this,
-          							margin: 4,
-          							members: [
-                                      isc.Label.create({
-                      					margin: 4,
-                      					align: "left",
-                      					height: 1,
-                      					contents: "<bold><h3>Bonuses</h3></bold>",
-                      					baseStyle: "headerItem"
-                      				}),
-          							this.bonusLG
-          							]
-      						    })
-          					]
-          				}),
-          				isc.HLayout.create({
-          					parent: this,
-          					margin: 4,
-          					members: [
-          						isc.VLayout.create({
-          							parent: this,
-          							margin: 4,
-          							members: [
-                                      isc.Label.create({
-                      					margin: 4,
-                      					align: "left",
-                      					height: 1,
-                      					contents: "<bold><h3>Modifiers</h3></bold>",
-                      					baseStyle: "headerItem"
-                      				}),
-          							this.modifierLG,
-          							]
-          						}),
-      						    isc.VLayout.create({
-          							parent: this,
-          							margin: 4,
-          							members: [
-                                      isc.Label.create({
-                      					margin: 4,
-                      					align: "left",
-                      					height: 1,
-                      					contents: "<bold><h3>Categories</h3></bold>",
-                      					baseStyle: "headerItem"
-                      				}),
-          							this.categoryLG
-          							]
-      						    })
-          					]
-          				})
-                    ]
-                  }),
+				{name: "class", valueMap:["Skill","Technique","Advantage","Equipment"], width: 80},
+				{name: "source", detail: true},
+				{name: "item_name", width: 150, canGroupBy: true},
+				{name: "itemType", width: 150, canGroupBy: true},
+				{name: "specialization", width: 100},
+				{name: "canonical_name", detail: true},
+				{name: "points", width: 50},
+				{name: "reference", width: 50},
+				{name: "difficulty", width: 50},
+				{name: "type", width: 50},
+				{name: "base_points", type: "integer", width: 50},
+				{name: "quantity", detail: true},
+				{name: "tech_level", detail: true},
+				{name: "legality_class", width: 50},
+				{name: "value", width: 50},
+				{name: "levels", detail: true},
+				{name: "cr", width: 50},
+				{name: "points_per_level", width: 50},
+				{name: "weight", width: 50},
+				{name: "notes", width: 50, width: "*"},
+				{name: "long_description", detail: true}
 			]
 		});
-        this.addMember(this.SearchLayout);
-        //this.itemLG.filterData({class: "skill", source: "basic"});
-    }
+		this.defaultDS = isc.myDataSource.create({
+			dataURL: "Defaults.php",
+			ID: "defaultDS",
+			fields:[
+				{name: "defaultID", primaryKey: true, detail: true},
+				{name: "itemID_fk", detail: true},
+				{name: "type"},
+				{name: "name"},
+				{name: "modifier"},
+				{name: "specialization"}
+			]
+		});
+		this.prerequisiteDS = isc.myDataSource.create({
+			dataURL: "Prerequisite.php",
+			ID: "prerequisiteDS",
+			fields:[
+				{name: "prerequisiteID", primaryKey: true, detail: true},
+				{name: "itemID_fk", detail: true},
+				{name: "class"},
+				{name: "name"},
+				{name: "specialization"},
+				{name: "notes"}
+			]
+		});
+		// this.categoryDS = isc.myDataSource.create({
+		// 	dataURL: "Categories.php",
+		// 	ID: "categoryDS",
+		// 	fields:[
+		// 		{name: "categoryID", primaryKey: true, detail: true},
+		// 		{name: "itemID_fk", detail: true},
+		// 		{name: "category"}
+		// 	]
+		// });
+		this.bonusDS = isc.myDataSource.create({
+			dataURL: "Bonuses.php",
+			ID: "bonusDS",
+			fields:[
+				{name: "bonusID", primaryKey: true, detail: true},
+				{name: "itemID_fk", detail: true},
+				{name: "class"},
+				{name: "name"},
+				{name: "specialization"},
+				{name: "amount"},
+				{name: "attribute"}
+			]
+		});
+		this.modifierDS = isc.myDataSource.create({
+			dataURL: "Modifiers.php",
+			ID: "modifierDS",
+			fields:[
+				{name: "modifierID", primaryKey: true, detail: true},
+				{name: "itemID_fk", detail: true},
+				{name: "name"},
+				{name: "affects"},
+				{name: "reference"},
+				{name: "notes"}
+			]
+		});
+
+		this.itemLG = isc.myListGrid.create({
+			autoFetchData: true,
+			dataSource: this.itemDS,
+			ID: "itemLG",
+			parent: this,
+			height: 150,
+			showFilterEditor: true,
+			width: 1310,
+			rowClick: function(record, recordNum, fieldNum, keyboardGenerated){
+				this.parent.defaultLG.fetchData({itemID_fk: record.itemID});
+				this.parent.prerequisiteLG.fetchData({itemID_fk: record.itemID});
+				// this.parent.categoryLG.fetchData({itemID_fk: record.itemID});
+				this.parent.bonusLG.fetchData({itemID_fk: record.itemID});
+				this.parent.modifierLG.fetchData({itemID_fk: record.itemID});
+			},
+		});
+		this.defaultLG = isc.myListGrid.create({
+			dataSource: this.defaultDS,
+			ID: "defaultLG"
+		});
+		this.prerequisiteLG = isc.myListGrid.create({
+			dataSource: this.prerequisiteDS,
+			ID: "prerequisiteLG"
+		});
+		this.bonusLG = isc.myListGrid.create({
+			dataSource: this.bonusDS,
+			ID: "bonusLG"
+		});
+		// this.categoryLG = isc.myListGrid.create({
+		// 	dataSource: this.categoryDS,
+		// 	ID: "categoryLG"
+		// });
+		this.modifierLG = isc.myListGrid.create({
+			dataSource: this.modifierDS,
+			ID: "modifierLG"
+		});
+
+		this.mainLB = isc.myLabel.create({contents: "<bold><h2>GURPS Search</h2></bold>"});
+		this.ItemLB = isc.myLabel.create({contents: "<bold><h3>Items</h3></bold>"});
+		this.DefaultLB = isc.myLabel.create({contents: "<bold><h3>Defaults</h3></bold>"});
+		this.BonusLB = isc.myLabel.create({contents: "<bold><h3>Bonuses</h3></bold>"});
+		this.PrerequisiteLB = isc.myLabel.create({contents: "<bold><h3>Prerequisites</h3></bold>"});
+		// this.CategoryLB = isc.myLabel.create({contents: "<bold><h3>Categories</h3></bold>"});
+		this.ModifierLB = isc.myLabel.create({contents: "<bold><h3>Modifiers</h3></bold>"});
+
+		this.SearchLayout = isc.VLayout.create({
+			membersMargin: 0,
+			parent: this,
+			members: [
+				isc.VLayout.create({
+					margin: 4,
+					parent: this,
+					members: [
+						this.mainLB,
+						this.ItemLB,
+						this.itemLG,
+						isc.HLayout.create({
+							parent: this,
+							margin: 4,
+							members: [
+								isc.VLayout.create({
+									parent: this,
+									margin: 4,
+									members: [this.DefaultLB, this.defaultLG]
+									}),
+								isc.VLayout.create({
+									parent: this,
+									margin: 4,
+									members: [this.BonusLB, this.bonusLG]
+								})
+							]
+						}),
+						isc.HLayout.create({
+							parent: this,
+							margin: 4,
+							members: [
+								isc.VLayout.create({
+									parent: this,
+									margin: 4,
+									members: [this.PrerequisiteLB, this.prerequisiteLG]
+									}),
+								isc.VLayout.create({
+									parent: this,
+									margin: 4,
+									members: [this.ModifierLB, this.modifierLG]
+								})
+							]
+						})
+						// ,
+						// isc.HLayout.create({
+						// 	parent: this,
+						// 	margin: 4,
+						// 	members: [
+						// 		isc.VLayout.create({
+						// 			parent: this,
+						// 			margin: 4,
+						// 			members: [this.CategoryLB, this.categoryLG]
+						// 			})
+						// 		// ,
+						// 		// isc.VLayout.create({
+						// 		// 	parent: this,
+						// 		// 	margin: 4,
+						// 		// 	members: [this.CategoryLB, this.categoryLG]
+						// 		// })
+						// 	]
+						// })
+					],
+				})
+			]
+		});
+		this.addMember(this.SearchLayout);
+		this.itemLG.filterData({class: "Skill"});
+	}
 });
 </SCRIPT>
 </BODY>
