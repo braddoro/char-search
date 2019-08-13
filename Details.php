@@ -11,7 +11,7 @@ $where = '1=1';
 if(isset($_REQUEST['itemID_fk'])){
     $where .= ' and itemID_fk = ' . intval($_REQUEST['itemID_fk']);
 }
-$sql = "select * from categories2 where $where order by category";
+$sql = "select * from details where $where";
 $response = $dbconn->getAll($sql);
 if(!$response){
     $response = array();

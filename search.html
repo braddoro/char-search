@@ -57,8 +57,8 @@ isc.SearchLayout = isc.VLayout.create({
 				{name: "itemID", primaryKey: true, detail: true},
 				{name: "class", valueMap:["Skill","Technique","Advantage","Equipment"], width: 80},
 				{name: "source", detail: true},
-				{name: "item_name", width: 150, canGroupBy: true},
-				{name: "itemType", width: 150, canGroupBy: true},
+				{name: "item_name", width: 150},
+				{name: "itemType", width: 150},
 				{name: "specialization", width: 100},
 				{name: "canonical_name", detail: true},
 				{name: "points", width: 50},
@@ -84,10 +84,10 @@ isc.SearchLayout = isc.VLayout.create({
 			fields:[
 				{name: "defaultID", primaryKey: true, detail: true},
 				{name: "itemID_fk", detail: true},
-				{name: "type"},
+				{name: "type", width: 100},
 				{name: "name"},
-				{name: "modifier"},
-				{name: "specialization"}
+				{name: "modifier", width: 100},
+				{name: "specialization", width: 200}
 			]
 		});
 		this.prerequisiteDS = isc.myDataSource.create({
@@ -96,32 +96,23 @@ isc.SearchLayout = isc.VLayout.create({
 			fields:[
 				{name: "prerequisiteID", primaryKey: true, detail: true},
 				{name: "itemID_fk", detail: true},
-				{name: "class"},
+				{name: "class", width: 100},
 				{name: "name"},
-				{name: "specialization"},
-				{name: "notes"}
+				{name: "specialization", width: 100},
+				{name: "notes", width: 100}
 			]
 		});
-		// this.categoryDS = isc.myDataSource.create({
-		// 	dataURL: "Categories.php",
-		// 	ID: "categoryDS",
-		// 	fields:[
-		// 		{name: "categoryID", primaryKey: true, detail: true},
-		// 		{name: "itemID_fk", detail: true},
-		// 		{name: "category"}
-		// 	]
-		// });
 		this.bonusDS = isc.myDataSource.create({
 			dataURL: "Bonuses.php",
 			ID: "bonusDS",
 			fields:[
 				{name: "bonusID", primaryKey: true, detail: true},
 				{name: "itemID_fk", detail: true},
-				{name: "class"},
+				{name: "class", width: 100},
 				{name: "name"},
-				{name: "specialization"},
-				{name: "amount"},
-				{name: "attribute"}
+				{name: "specialization", width: 100},
+				{name: "amount", width: 100},
+				{name: "attribute", width: 100}
 			]
 		});
 		this.modifierDS = isc.myDataSource.create({
@@ -131,9 +122,18 @@ isc.SearchLayout = isc.VLayout.create({
 				{name: "modifierID", primaryKey: true, detail: true},
 				{name: "itemID_fk", detail: true},
 				{name: "name"},
-				{name: "affects"},
-				{name: "reference"},
-				{name: "notes"}
+				{name: "affects", width: 100},
+				{name: "reference", width: 100},
+				{name: "notes", width: 100}
+			]
+		});
+		this.detailDS = isc.myDataSource.create({
+			dataURL: "Details.php",
+			ID: "categoryDS",
+			fields:[
+				{name: "detailID", primaryKey: true, detail: true},
+				{name: "itemID_fk", detail: true},
+				{name: "detail"}
 			]
 		});
 
@@ -148,9 +148,9 @@ isc.SearchLayout = isc.VLayout.create({
 			rowClick: function(record, recordNum, fieldNum, keyboardGenerated){
 				this.parent.defaultLG.fetchData({itemID_fk: record.itemID});
 				this.parent.prerequisiteLG.fetchData({itemID_fk: record.itemID});
-				// this.parent.categoryLG.fetchData({itemID_fk: record.itemID});
 				this.parent.bonusLG.fetchData({itemID_fk: record.itemID});
 				this.parent.modifierLG.fetchData({itemID_fk: record.itemID});
+				this.parent.detailLG.fetchData({itemID_fk: record.itemID});
 			},
 		});
 		this.defaultLG = isc.myListGrid.create({
@@ -165,13 +165,14 @@ isc.SearchLayout = isc.VLayout.create({
 			dataSource: this.bonusDS,
 			ID: "bonusLG"
 		});
-		// this.categoryLG = isc.myListGrid.create({
-		// 	dataSource: this.categoryDS,
-		// 	ID: "categoryLG"
-		// });
 		this.modifierLG = isc.myListGrid.create({
 			dataSource: this.modifierDS,
 			ID: "modifierLG"
+		});
+		this.detailLG = isc.myListGrid.create({
+			dataSource: this.detailDS,
+			ID: "detailLG",
+			width: 1310
 		});
 
 		this.mainLB = isc.myLabel.create({contents: "<bold><h2>GURPS Search</h2></bold>"});
@@ -179,11 +180,11 @@ isc.SearchLayout = isc.VLayout.create({
 		this.DefaultLB = isc.myLabel.create({contents: "<bold><h3>Defaults</h3></bold>"});
 		this.BonusLB = isc.myLabel.create({contents: "<bold><h3>Bonuses</h3></bold>"});
 		this.PrerequisiteLB = isc.myLabel.create({contents: "<bold><h3>Prerequisites</h3></bold>"});
-		// this.CategoryLB = isc.myLabel.create({contents: "<bold><h3>Categories</h3></bold>"});
 		this.ModifierLB = isc.myLabel.create({contents: "<bold><h3>Modifiers</h3></bold>"});
+		this.DetailLB = isc.myLabel.create({contents: "<bold><h3>Details</h3></bold>"});
 
 		this.SearchLayout = isc.VLayout.create({
-			membersMargin: 0,
+			margin: 4,
 			parent: this,
 			members: [
 				isc.VLayout.create({
@@ -225,24 +226,18 @@ isc.SearchLayout = isc.VLayout.create({
 								})
 							]
 						})
-						// ,
-						// isc.HLayout.create({
-						// 	parent: this,
-						// 	margin: 4,
-						// 	members: [
-						// 		isc.VLayout.create({
-						// 			parent: this,
-						// 			margin: 4,
-						// 			members: [this.CategoryLB, this.categoryLG]
-						// 			})
-						// 		// ,
-						// 		// isc.VLayout.create({
-						// 		// 	parent: this,
-						// 		// 	margin: 4,
-						// 		// 	members: [this.CategoryLB, this.categoryLG]
-						// 		// })
-						// 	]
-						// })
+						,
+						isc.HLayout.create({
+							parent: this,
+							margin: 4,
+							members: [
+								isc.VLayout.create({
+									parent: this,
+									margin: 4,
+									members: [this.DetailLB, this.detailLG]
+									})
+							]
+						})
 					],
 				})
 			]
