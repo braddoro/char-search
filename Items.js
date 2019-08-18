@@ -1,12 +1,12 @@
 isc.defineClass("Items", "myWindow").addProperties({
 	canDragResize: true,
+	height: 690,
 	left: 20,
-	top: 20,
 	name: "Items",
 	parent: this,
 	title: "Items",
+	top: 20,
 	width: 1300,
-	height: 690,
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 		this.itemDS = isc.myDataSource.create({
@@ -86,21 +86,10 @@ isc.defineClass("Items", "myWindow").addProperties({
 				{name: "notes", width: 100}
 			]
 		});
-		// this.detailDS = isc.myDataSource.create({
-		// 	dataURL: "Details.php",
-		// 	ID: "categoryDS",
-		// 	fields:[
-		// 		{name: "detailID", primaryKey: true, detail: true},
-		// 		{name: "itemID_fk", detail: true},
-		// 		{name: "detail"}
-		// 	]
-		// });
-
 		this.itemLG = isc.myListGrid.create({
 			autoFetchData: true,
 			dataSource: this.itemDS,
 			height: 250,
-			width: 1250,
 			ID: "itemLG",
 			parent: this,
 			showFilterEditor: true,
@@ -109,14 +98,15 @@ isc.defineClass("Items", "myWindow").addProperties({
 				this.parent.prerequisiteLG.fetchData({itemID_fk: record.itemID});
 				this.parent.bonusLG.fetchData({itemID_fk: record.itemID});
 				this.parent.modifierLG.fetchData({itemID_fk: record.itemID});
-				// this.parent.detailLG.fetchData({itemID_fk: record.itemID});
 				var title2 = record.class + ' :: ' + record.itemName;
 				if(record.reference > ""){
 					title2 += ' :: ' + record.reference;
 				}
+				var note = "No items to show.";
 				if(record.notes > ""){
-					this.parent.NoteDF.setValue("detail", record.notes);
+					note = record.notes;
 				}
+				this.parent.NoteDF.setValue("detail", note);
 			}
 		});
 		this.defaultLG = isc.myListGrid.create({
@@ -135,11 +125,6 @@ isc.defineClass("Items", "myWindow").addProperties({
 			dataSource: this.modifierDS,
 			ID: "modifierLG"
 		});
-		// this.detailLG = isc.myListGrid.create({
-		// 	dataSource: this.detailDS,
-		// 	ID: "detailLG",
-		// 	width: 1310
-		// });
 		this.NoteDF = isc.DynamicForm.create({
 			parent: this,
 			canDragResize: true,
@@ -148,9 +133,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 			width: "100%",
 			numCols: 1,
 			titleOrientation: "none",
-			fields: [
-				{name: "detail", type: "textArea", height: "100%", width: "100%"}
-			]
+			fields: [{name: "detail", type: "textArea", height: "100%", width: "100%"}]
 		});
 
 		this.mainLB = isc.myLabel.create({contents: "<bold><h2>Search</h2></bold>"});
@@ -173,49 +156,16 @@ isc.defineClass("Items", "myWindow").addProperties({
 						this.mainLB,
 						this.ItemLB,
 						this.itemLG,
-						isc.HLayout.create({
-							parent: this,
-							margin: 4,
-							members: [
-								isc.VLayout.create({
-									parent: this,
-									margin: 4,
-									members: [this.DefaultLB, this.defaultLG]
-									}),
-								isc.VLayout.create({
-									parent: this,
-									margin: 4,
-									members: [this.BonusLB, this.bonusLG]
-								})
-							]
-						}),
-						isc.HLayout.create({
-							parent: this,
-							margin: 4,
-							members: [
-								isc.VLayout.create({
-									parent: this,
-									margin: 4,
-									members: [this.PrerequisiteLB, this.prerequisiteLG]
-									}),
-								isc.VLayout.create({
-									parent: this,
-									margin: 4,
-									members: [this.ModifierLB, this.modifierLG]
-								})
-							]
-						}),
-						isc.HLayout.create({
-							parent: this,
-							margin: 4,
-							members: [
-								isc.VLayout.create({
-									parent: this,
-									margin: 4,
-									members: [this.DetailLB, this.NoteDF]
-									})
-							]
-						})
+						this.DefaultLB,
+						this.defaultLG,
+						this.BonusLB,
+						this.bonusLG,
+						this.PrerequisiteLB,
+						this.prerequisiteLG,
+						this.ModifierLB,
+						this.modifierLG,
+						this.DetailLB,
+						this.NoteDF
 					],
 				})
 			]

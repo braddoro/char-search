@@ -1,10 +1,11 @@
 isc.defineClass("Lookups", "myWindow").addProperties({
 	canDragResize: true,
-	height: "95%",
+	height: "*",
 	name: "Lookups",
 	parent: this,
 	title: "Lookups",
-	width: "33%",
+	width: 300,
+	// width: "33%",
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 		this.lookupDS = isc.myDataSource.create({
@@ -21,22 +22,27 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			]
 		});
 		this.lookupLG = isc.myListGrid.create({
-			// showEdges: true,
+			showEdges: true,
 			autoFetchData: true,
+			// autoFitData: "both",
+			childLeft: (this.left + this.width),
+			childTop: (this.top),
+			// childLeft: 25,
+			// childTop: 25,
 			dataSource: this.lookupDS,
 			groupByField: "lookupName",
 			groupStartOpen: "none",
-			height: "110%",
+			height: "*",
 			ID: "lookupLG",
 			parent: this,
-			autoFitData: "both",
 			showFilterEditor: true,
 			showGroupSummary: true,
-			width: "110%",
-			childLeft: (this.left + this.width),
-			childTop: (this.top + 25),
+			width: 300,
+			resized: function(){
+				this.childLeft = (this.left + this.width);
+				this.childTop = (this.top);
+			},
 			recordClick: function(viewer, record, recordNum, field, fieldNum, value, rawValue){
-				// var detail;
 				var title2 = record.category + ' :: ' + record.itemName;
 				if(record.lookupRef > ""){
 					title2 += ' :: ' + record.lookupRef;
