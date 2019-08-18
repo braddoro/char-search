@@ -1,12 +1,12 @@
 isc.defineClass("Items", "myWindow").addProperties({
 	canDragResize: true,
-	height: "97%",
 	left: 20,
+	top: 20,
 	name: "Items",
 	parent: this,
 	title: "Items",
-	top: 20,
-	width: "98%",
+	width: 1300,
+	height: 690,
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 		this.itemDS = isc.myDataSource.create({
@@ -16,7 +16,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 				{name: "itemID", primaryKey: true, detail: true},
 				{name: "class", valueMap:["Skill","Technique","Advantage","Equipment"], width: 80},
 				{name: "source", detail: true},
-				{name: "item_name", width: 150},
+				{name: "item_name", width: "*"},
 				{name: "itemType", width: 150},
 				{name: "specialization", width: 100},
 				{name: "canonical_name", detail: true},
@@ -33,7 +33,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 				{name: "cr", width: 50},
 				{name: "points_per_level", width: 50},
 				{name: "weight", width: 50},
-				{name: "notes", width: 50, width: "*"},
+				{name: "notes", width: 50, detail: true},
 				{name: "long_description", detail: true}
 			]
 		});
@@ -86,31 +86,38 @@ isc.defineClass("Items", "myWindow").addProperties({
 				{name: "notes", width: 100}
 			]
 		});
-		this.detailDS = isc.myDataSource.create({
-			dataURL: "Details.php",
-			ID: "categoryDS",
-			fields:[
-				{name: "detailID", primaryKey: true, detail: true},
-				{name: "itemID_fk", detail: true},
-				{name: "detail"}
-			]
-		});
+		// this.detailDS = isc.myDataSource.create({
+		// 	dataURL: "Details.php",
+		// 	ID: "categoryDS",
+		// 	fields:[
+		// 		{name: "detailID", primaryKey: true, detail: true},
+		// 		{name: "itemID_fk", detail: true},
+		// 		{name: "detail"}
+		// 	]
+		// });
 
 		this.itemLG = isc.myListGrid.create({
 			autoFetchData: true,
 			dataSource: this.itemDS,
-			height: 150,
+			height: 250,
+			width: 1250,
 			ID: "itemLG",
 			parent: this,
 			showFilterEditor: true,
-			width: 1310,
 			rowClick: function(record, recordNum, fieldNum, keyboardGenerated){
 				this.parent.defaultLG.fetchData({itemID_fk: record.itemID});
 				this.parent.prerequisiteLG.fetchData({itemID_fk: record.itemID});
 				this.parent.bonusLG.fetchData({itemID_fk: record.itemID});
 				this.parent.modifierLG.fetchData({itemID_fk: record.itemID});
-				this.parent.detailLG.fetchData({itemID_fk: record.itemID});
-			},
+				// this.parent.detailLG.fetchData({itemID_fk: record.itemID});
+				var title2 = record.class + ' :: ' + record.itemName;
+				if(record.reference > ""){
+					title2 += ' :: ' + record.reference;
+				}
+				if(record.notes > ""){
+					this.parent.NoteDF.setValue("detail", record.notes);
+				}
+			}
 		});
 		this.defaultLG = isc.myListGrid.create({
 			dataSource: this.defaultDS,
@@ -128,10 +135,22 @@ isc.defineClass("Items", "myWindow").addProperties({
 			dataSource: this.modifierDS,
 			ID: "modifierLG"
 		});
-		this.detailLG = isc.myListGrid.create({
-			dataSource: this.detailDS,
-			ID: "detailLG",
-			width: 1310
+		// this.detailLG = isc.myListGrid.create({
+		// 	dataSource: this.detailDS,
+		// 	ID: "detailLG",
+		// 	width: 1310
+		// });
+		this.NoteDF = isc.DynamicForm.create({
+			parent: this,
+			canDragResize: true,
+			canEdit: false,
+			height: 120,
+			width: "100%",
+			numCols: 1,
+			titleOrientation: "none",
+			fields: [
+				{name: "detail", type: "textArea", height: "100%", width: "100%"}
+			]
 		});
 
 		this.mainLB = isc.myLabel.create({contents: "<bold><h2>Search</h2></bold>"});
@@ -145,6 +164,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 		this.PageLayout = isc.VLayout.create({
 			margin: 4,
 			parent: this,
+			height: "*",
 			members: [
 				isc.VLayout.create({
 					margin: 4,
@@ -184,8 +204,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 									members: [this.ModifierLB, this.modifierLG]
 								})
 							]
-						})
-						,
+						}),
 						isc.HLayout.create({
 							parent: this,
 							margin: 4,
@@ -193,7 +212,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 								isc.VLayout.create({
 									parent: this,
 									margin: 4,
-									members: [this.DetailLB, this.detailLG]
+									members: [this.DetailLB, this.NoteDF]
 									})
 							]
 						})

@@ -1,4 +1,6 @@
 isc.defineClass("myWindow", "Window").addProperties({
+	// showCorner: true,
+	// useTouchScrolling: true,
 	showMaximizeButton: true,
 	canDragReposition: true,
 	keepInParentRect: true,
@@ -6,25 +8,27 @@ isc.defineClass("myWindow", "Window").addProperties({
 	canDragResize: true,
 	edgeMarginSize: 2,
 	showShadow: true,
-	height: "300",
-	width: "485",
+	defaultHeight: 300,
+	defaultWidth: 485,
+	overflow: "auto",
+	leaveScrollbarGap: true,
 	title: "",
 	left: 25,
-	top: 25,
-	resized: function(){
-		// console.log("Title.: " + this.title);
-		// console.log("Width.: " + this.width);
-		// console.log("Height: " + this.height);
-		// console.log("Left..: " + this.left);
-		// console.log("Top...: " + this.top);
-	},
-	moved: function(){
-		// console.log("Title.: " + this.title);
-		// console.log("Width.: " + this.width);
-		// console.log("Height: " + this.height);
-		// console.log("Left..: " + this.left);
-		// console.log("Top...: " + this.top);
-	}
+	top: 25
+	// resized: function(){
+	// 	console.log("Title.: " + this.title);
+	// 	console.log("Width.: " + this.width);
+	// 	console.log("Height: " + this.height);
+	// 	console.log("Left..: " + this.left);
+	// 	console.log("Top...: " + this.top);
+	// }
+	// moved: function(){
+	// 	// console.log("Title.: " + this.title);
+	// 	// console.log("Width.: " + this.width);
+	// 	// console.log("Height: " + this.height);
+	// 	// console.log("Left..: " + this.left);
+	// 	// console.log("Top...: " + this.top);
+	// }
 });
 isc.defineClass("myVLayout", "VLayout").addProperties({
 	height: "100%"
@@ -42,8 +46,10 @@ isc.defineClass("myListGrid", "ListGrid").addProperties({
 	selectionStyle: "single",
 	shadowOffset: 3,
 	shadowSoftness: 7,
+	// autoFitData: "both"
 	showAllRecords: true,
 	showShadow: true,
+	height: 150,
 	// width: 650,
 	dataArrived: function(startRow, endRow){
 		this.selectSingleRecord(startRow);

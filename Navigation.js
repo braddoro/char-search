@@ -4,11 +4,9 @@ isc.defineClass("Navigation", "Menu").addProperties({
 			title: "...",
 			showShadow: true,
 			items: [
-				// {title: "Books", submenu: this.BookMenu},
-				// {isSeparator: true},
 				{title: "Items", click: "isc.Items.create({width: \"95%\", height: \"95%\"})"},
-				{title: "Lookups", click: "isc.Lookups.create()"}
-				// {title: "Show Log", click: "isc.ShowLog.create({width: 1200, height: \"95%\"})"}
+				{isSeparator: true},
+				{title: "Lookups", click: "isc.Lookups.create({width: 1350, height: 650})"}
 			]
 		});
 		this.menuBar = isc.MenuBar.create({
