@@ -1,4 +1,4 @@
 <?php
-header("Location: show.htm");
+header("Location: index_char.php");
 die();
 ?>

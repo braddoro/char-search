@@ -1,55 +1,14 @@
-<HTML>
-	<HEAD>
-		<SCRIPT>var isomorphicDir="../smartclientRuntime/isomorphic/";</SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Core.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Containers.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Grids.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_Forms.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
-		<SCRIPT SRC=../smartclientRuntime/isomorphic/skins/Graphite/load_skin.js></SCRIPT>
-	</HEAD>
-	<BODY>
-<SCRIPT>
-isc.defineClass("myListGrid", "ListGrid").addProperties({
-	alternateRecordStyles: true,
-	autoFitFieldWidths: true,
-	autoFitWidthApproach: 'title',
+isc.defineClass("Items", "myWindow").addProperties({
 	canDragResize: true,
-	height: 150,
-	leaveScrollbarGap: false,
-	left: 5,
-	shadowOffset: 3,
-	shadowSoftness: 7,
-	showAllRecords: true,
-	showShadow: true,
-	width: 650,
-	dataArrived: function(startRow, endRow){
-		this.selectSingleRecord(startRow);
-		this.recordClick(this, startRow, startRow);
-	}
-});
-isc.defineClass("myDataSource", "DataSource").addProperties({
-	dataFormat: "json",
-	operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}],
-	handleError: function(response, request) {
-		return true;
-	}
-});
-isc.defineClass("myLabel", "Label").addProperties({
-	baseStyle: "headerItem",
-	height: 1,
-	width: 500
-});
-
-isc.SearchLayout = isc.VLayout.create({
-	canDragResize: true,
-	name: "Search",
+	top: 20,
+	left: 20,
+	height: "97%",
+	width: "98%",
+	name: "Items",
 	parent: this,
-	title: "Search",
+	title: "Items",
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
-
 		this.itemDS = isc.myDataSource.create({
 			dataURL: "Items.php",
 			ID: "itemDS",
@@ -140,9 +99,9 @@ isc.SearchLayout = isc.VLayout.create({
 		this.itemLG = isc.myListGrid.create({
 			autoFetchData: true,
 			dataSource: this.itemDS,
+			height: 150,
 			ID: "itemLG",
 			parent: this,
-			height: 150,
 			showFilterEditor: true,
 			width: 1310,
 			rowClick: function(record, recordNum, fieldNum, keyboardGenerated){
@@ -183,7 +142,7 @@ isc.SearchLayout = isc.VLayout.create({
 		this.ModifierLB = isc.myLabel.create({contents: "<bold><h3>Modifiers</h3></bold>"});
 		this.DetailLB = isc.myLabel.create({contents: "<bold><h3>Details</h3></bold>"});
 
-		this.SearchLayout = isc.VLayout.create({
+		this.PageLayout = isc.VLayout.create({
 			margin: 4,
 			parent: this,
 			members: [
@@ -242,10 +201,7 @@ isc.SearchLayout = isc.VLayout.create({
 				})
 			]
 		});
-		this.addMember(this.SearchLayout);
+		this.addMember(this.PageLayout);
 		this.itemLG.filterData({class: "Skill"});
 	}
 });
-</SCRIPT>
-</BODY>
-</HTML>
