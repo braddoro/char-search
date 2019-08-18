@@ -1,12 +1,12 @@
 isc.defineClass("Items", "myWindow").addProperties({
 	canDragResize: true,
-	top: 20,
-	left: 20,
 	height: "97%",
-	width: "98%",
+	left: 20,
 	name: "Items",
 	parent: this,
 	title: "Items",
+	top: 20,
+	width: "98%",
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 		this.itemDS = isc.myDataSource.create({
@@ -134,7 +134,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 			width: 1310
 		});
 
-		this.mainLB = isc.myLabel.create({contents: "<bold><h2>GURPS Search</h2></bold>"});
+		this.mainLB = isc.myLabel.create({contents: "<bold><h2>Search</h2></bold>"});
 		this.ItemLB = isc.myLabel.create({contents: "<bold><h3>Items</h3></bold>"});
 		this.DefaultLB = isc.myLabel.create({contents: "<bold><h3>Defaults</h3></bold>"});
 		this.BonusLB = isc.myLabel.create({contents: "<bold><h3>Bonuses</h3></bold>"});
