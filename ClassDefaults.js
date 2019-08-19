@@ -1,21 +1,16 @@
 isc.defineClass("myWindow", "Window").addProperties({
-	showCorner: true,
-	// useTouchScrolling: true,
-	showMaximizeButton: true,
 	canDragReposition: true,
-	keepInParentRect: true,
-	dismissOnEscape: false,
 	canDragResize: true,
-	edgeMarginSize: 5,
-	showShadow: true,
 	defaultHeight: 300,
 	defaultWidth: 485,
-	// height: 200,
-	// width: 200,
-	// overflow: "auto",
-	// leaveScrollbarGap: true,
-	title: "",
+	dismissOnEscape: false,
+	edgeMarginSize: 5,
+	keepInParentRect: true,
 	left: 25,
+	showCorner: true,
+	showMaximizeButton: true,
+	showShadow: true,
+	title: "",
 	top: 25
 	// resized: function(){
 	// 	console.log("Title.: " + this.title);
@@ -61,11 +56,6 @@ isc.defineClass("myListGrid", "ListGrid").addProperties({
 isc.defineClass("myDataSource", "DataSource").addProperties({
 	dataFormat: "json",
 	operationBindings:[{operationType:"fetch", dataProtocol:"postParams"}]
-	// willHandleError: true
-	// handleError: function(response, request){
-	// 	isc.warn('sadfsadfsdf');
-	// 	return true;
-	// }
 });
 isc.defineClass("myLabel", "Label").addProperties({
 	valign: "top",

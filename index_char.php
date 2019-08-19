@@ -36,7 +36,7 @@ foreach($classes as $class){
 }
 echo $content;
 $now = date(DATE_RFC2822);
-$str = "<strong>$title</strong><br>{$now}<br>";
+$str = "{$now}";
 echo 'isc.Desktop.create({data: "'. $str .'"});
 </script>
 </body>

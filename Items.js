@@ -136,15 +136,12 @@ isc.defineClass("Items", "myWindow").addProperties({
 			width: "100%",
 			fields: [{name: "detail", type: "textArea", height: "100%", width: "100%"}]
 		});
-
-		// this.mainLB = isc.myLabel.create({contents: "<br /><bold><h2>Search</h2></bold>"});
 		this.ItemLB = isc.myLabel.create({contents: "<br /><bold><h3>Items</h3></bold>"});
 		this.DefaultLB = isc.myLabel.create({contents: "<br /><bold><h3>Defaults</h3></bold>"});
 		this.BonusLB = isc.myLabel.create({contents: "<br /><bold><h3>Bonuses</h3></bold>"});
 		this.PrerequisiteLB = isc.myLabel.create({contents: "<br /><bold><h3>Prerequisites</h3></bold>"});
 		this.ModifierLB = isc.myLabel.create({contents: "<br /><bold><h3>Modifiers</h3></bold>"});
 		this.DetailLB = isc.myLabel.create({contents: "<br /><bold><h3>Details</h3></bold>"});
-
 		this.PageLayout = isc.VLayout.create({
 			margin: 4,
 			parent: this,
@@ -154,7 +151,6 @@ isc.defineClass("Items", "myWindow").addProperties({
 					margin: 4,
 					parent: this,
 					members: [
-						// this.mainLB,
 						this.ItemLB,
 						this.itemLG,
 						this.DefaultLB,
