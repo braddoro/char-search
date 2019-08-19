@@ -25,10 +25,7 @@ if(isset($_REQUEST['itemDetail'])){
 	$qStr = $dbconn->qStr($_REQUEST['itemDetail'], true);
 	$where .= " and ld.itemDetail like '%{$_REQUEST['itemDetail']}%' ";
 }
-$sql = "SELECT
-l.category,
-l.lookupID, l.lookupName, l.lookupRef,
-ld.lookupItemID, ld.itemName, ld.itemDetail, ld.itemRef
+$sql = "SELECT l.category, l.lookupID, l.lookupName, l.lookupRef, ld.lookupItemID, ld.itemName, ld.itemDetail, ld.itemRef
 FROM Lookup l inner join LookupData ld on l.lookupID = ld.lookupID where {$where} order by l.lookupName, ld.itemName;";
 // echo "/* {$sql} */";
 $response = $dbconn->getAll($sql);
@@ -37,4 +34,3 @@ if(!$response){
 }
 echo json_encode($response);
 $dbconn->close();
-?>

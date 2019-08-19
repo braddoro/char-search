@@ -35,10 +35,11 @@ foreach($classes as $class){
 	}
 }
 echo $content;
-$now = date(DATE_RFC2822);
-$str = "{$now}";
+// $now = date(DATE_RFC2822);
+$now = date("Y-m-d H:m:s e O");
+$str = "Stellar Notes For - {$now}";
 echo 'isc.Desktop.create({data: "'. $str .'"});
 </script>
 </body>
 </html>';
-?>
+

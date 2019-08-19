@@ -37,10 +37,6 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			showFilterEditor: true,
 			showGroupSummary: true,
 			width: "100%",
-			resized: function(){
-				this.childLeft = (this.left + this.width);
-				this.childTop = (this.top);
-			},
 			recordClick: function(viewer, record, recordNum, field, fieldNum, value, rawValue){
 				var title2 = record.category + ' :: ' + record.itemName;
 				if(record.lookupRef > ""){
@@ -57,5 +53,7 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			members: [this.lookupLG]
 		});
 		this.addMember(this.SearchLayoutVL);
+		this.childLeft = (this.left + this.width) + 20;
+		this.childTop = (this.top) + 20;
 	}
 });

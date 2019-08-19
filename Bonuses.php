@@ -18,4 +18,3 @@ if(!$response){
 }
 echo json_encode($response);
 $dbconn->close();
-?>

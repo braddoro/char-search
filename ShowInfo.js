@@ -17,5 +17,11 @@ isc.defineClass("ShowInfo", "myWindow").addProperties({
 		this.ShowInfoDF.setValue("detail", initData.info);
 		this.left = initData.left;
 		this.top = initData.top;
+		if(initData.canEdit){
+			this.ShowInfoDF.canEdit = initData.canEdit;
+		}
+		if(initData.autoCenter){
+			this.ShowInfoDF.autoCenter = initData.autoCenter;
+		}
 	}
 });
