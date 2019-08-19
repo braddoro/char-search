@@ -47,7 +47,6 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 					title2 += ' :: ' + record.lookupRef;
 				}
 				if(record.itemDetail > ""){
-					// detail = record.itemDetail.replace(/(["<br/>"])\w+/, "\r\n")
 					isc.ShowInfo.create({title: title2, info: record.itemDetail, left: this.childLeft, top: this.childTop});
 					this.childTop = this.childTop + 20;
 					this.childLeft = this.childLeft + 20;
@@ -58,7 +57,5 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			members: [this.lookupLG]
 		});
 		this.addMember(this.SearchLayoutVL);
-		// this.lookupLG.childLeft = (this.left + this.width);
-		// this.lookupLG.childTop = this.top;
 	}
 });
