@@ -25,7 +25,7 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			autoFetchData: true,
 			autoFitData: "both",
 			childLeft: 360,
-			childTop: 25,
+			childTop: 30,
 			dataSource: this.lookupDS,
 			groupByField: "lookupName",
 			groupStartOpen: "none",
@@ -49,8 +49,8 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 				if(record.itemDetail > ""){
 					// detail = record.itemDetail.replace(/(["<br/>"])\w+/, "\r\n")
 					isc.ShowInfo.create({title: title2, info: record.itemDetail, left: this.childLeft, top: this.childTop});
-					this.childTop = this.childTop + 25;
-					this.childLeft = this.childLeft + 25;
+					this.childTop = this.childTop + 20;
+					this.childLeft = this.childLeft + 20;
 				}
 			}
 		});
@@ -58,7 +58,7 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			members: [this.lookupLG]
 		});
 		this.addMember(this.SearchLayoutVL);
-		this.lookupLG.childLeft = (this.left + this.width);
-		this.lookupLG.childTop = this.top;
+		// this.lookupLG.childLeft = (this.left + this.width);
+		// this.lookupLG.childTop = this.top;
 	}
 });
