@@ -1,11 +1,11 @@
 isc.defineClass("Lookups", "myWindow").addProperties({
 	canDragResize: true,
+	top: 25,
+	left: 5,
 	height: "*",
 	name: "Lookups",
 	parent: this,
 	title: "Lookups",
-	width: 300,
-	// width: "33%",
 	initWidget: function(initData){
 		this.Super("initWidget", arguments);
 		this.lookupDS = isc.myDataSource.create({
@@ -22,22 +22,21 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			]
 		});
 		this.lookupLG = isc.myListGrid.create({
-			showEdges: true,
 			autoFetchData: true,
-			// autoFitData: "both",
-			childLeft: (this.left + this.width),
-			childTop: (this.top),
-			// childLeft: 25,
-			// childTop: 25,
+			autoFitData: "both",
+			childLeft: 360,
+			childTop: 25,
 			dataSource: this.lookupDS,
 			groupByField: "lookupName",
 			groupStartOpen: "none",
 			height: "*",
+			height: "100%",
 			ID: "lookupLG",
 			parent: this,
+			showEdges: true,
 			showFilterEditor: true,
 			showGroupSummary: true,
-			width: 300,
+			width: "100%",
 			resized: function(){
 				this.childLeft = (this.left + this.width);
 				this.childTop = (this.top);
@@ -59,5 +58,7 @@ isc.defineClass("Lookups", "myWindow").addProperties({
 			members: [this.lookupLG]
 		});
 		this.addMember(this.SearchLayoutVL);
+		this.lookupLG.childLeft = (this.left + this.width);
+		this.lookupLG.childTop = this.top;
 	}
 });

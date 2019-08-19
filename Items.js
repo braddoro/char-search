@@ -3,6 +3,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 	height: 690,
 	left: 20,
 	name: "Items",
+	overflow: "auto",
 	parent: this,
 	title: "Items",
 	top: 20,
@@ -136,7 +137,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 			fields: [{name: "detail", type: "textArea", height: "100%", width: "100%"}]
 		});
 
-		this.mainLB = isc.myLabel.create({contents: "<bold><h2>Search</h2></bold>"});
+		// this.mainLB = isc.myLabel.create({contents: "<bold><h2>Search</h2></bold>"});
 		this.ItemLB = isc.myLabel.create({contents: "<bold><h3>Items</h3></bold>"});
 		this.DefaultLB = isc.myLabel.create({contents: "<bold><h3>Defaults</h3></bold>"});
 		this.BonusLB = isc.myLabel.create({contents: "<bold><h3>Bonuses</h3></bold>"});
@@ -153,7 +154,7 @@ isc.defineClass("Items", "myWindow").addProperties({
 					margin: 4,
 					parent: this,
 					members: [
-						this.mainLB,
+						// this.mainLB,
 						this.ItemLB,
 						this.itemLG,
 						this.DefaultLB,
